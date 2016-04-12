@@ -5,6 +5,7 @@
 
 // BEGIN IMPORTS
 import require, { has } from 'require';
+import { ENV, context } from 'ember-environment';
 import Ember from 'ember-metal/core';
 import { deprecateFunc } from 'ember-metal/debug';
 import isEnabled, { FEATURES } from 'ember-metal/features';
@@ -330,6 +331,86 @@ Ember.FEATURES = FEATURES;
 Ember.FEATURES.isEnabled = isEnabled;
 
 /**
+  Determines whether Ember should add to `Array`, `Function`, and `String`
+  native object prototypes, a few extra methods in order to provide a more
+  friendly API.
+
+  We generally recommend leaving this option set to true however, if you need
+  to turn it off, you can add the configuration property
+  `EXTEND_PROTOTYPES` to `EmberENV` and set it to `false`.
+
+  Note, when disabled (the default configuration for Ember Addons), you will
+  instead have to access all methods and functions from the Ember
+  namespace.
+
+  @property EXTEND_PROTOTYPES
+  @type Boolean
+  @default true
+  @for Ember
+  @public
+*/
+Object.defineProperty(Ember, 'EXTEND_PROTOTYPES', {
+  get: () => ENV.EXTEND_PROTOTYPES,
+  set: value => ENV.EXTEND_PROTOTYPES = !!value,
+  enumerable: false
+});
+
+/**
+  The `LOG_STACKTRACE_ON_DEPRECATION` property, when true, tells Ember to log
+  a full stack trace during deprecation warnings.
+
+  @property LOG_STACKTRACE_ON_DEPRECATION
+  @type Boolean
+  @default true
+  @for Ember
+  @public
+*/
+Object.defineProperty(Ember, 'LOG_STACKTRACE_ON_DEPRECATION', {
+  get: () => ENV.LOG_STACKTRACE_ON_DEPRECATION,
+  set: value => ENV.LOG_STACKTRACE_ON_DEPRECATION = !!value,
+  enumerable: false
+});
+
+/**
+  The `LOG_VERSION` property, when true, tells Ember to log versions of all
+  dependent libraries in use.
+
+  @property LOG_VERSION
+  @type Boolean
+  @default true
+  @for Ember
+  @public
+*/
+Object.defineProperty(Ember, 'LOG_VERSION', {
+  get: () => ENV.LOG_VERSION,
+  set: value => ENV.LOG_VERSION = !!value,
+  enumerable: false
+});
+
+Object.defineProperty(Ember, 'MODEL_FACTORY_INJECTIONS', {
+  get: () => ENV.MODEL_FACTORY_INJECTIONS,
+  set: value => ENV.MODEL_FACTORY_INJECTIONS = !!value,
+  enumerable: false
+});
+
+/**
+  Debug parameter you can turn on. This will log all bindings that fire to
+  the console. This should be disabled in production code. Note that you
+  can also enable this from the console or temporarily.
+
+  @property LOG_BINDINGS
+  @for Ember
+  @type Boolean
+  @default false
+  @public
+*/
+Object.defineProperty(Ember, 'LOG_BINDINGS', {
+  get: () => ENV.LOG_BINDINGS,
+  set: value => ENV.LOG_BINDINGS = !!value,
+  enumerable: false
+});
+
+/**
   A function may be assigned to `Ember.onerror` to be called when Ember
   internals encounter an error. This is useful for specialized error handling
   and reporting code.
@@ -366,5 +447,8 @@ if (has('ember-debug')) {
 
 Ember.create = deprecateFunc('Ember.create is deprecated in favor of Object.create', { id: 'ember-metal.ember-create', until: '3.0.0' }, Object.create);
 Ember.keys = deprecateFunc('Ember.keys is deprecated in favor of Object.keys', { id: 'ember-metal.ember.keys', until: '3.0.0' }, Object.keys);
+
+// export Ember and Em
+context.exports.Ember = context.exports.Em = Ember;
 
 export default Ember;

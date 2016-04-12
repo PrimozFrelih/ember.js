@@ -3,6 +3,7 @@
 @submodule ember-application
 */
 import Ember from 'ember-metal'; // Ember.libraries, LOG_VERSION, Namespace, BOOTED
+import { ENV } from 'ember-environment';
 import { assert, debug, warn, deprecate } from 'ember-metal/debug';
 import { get } from 'ember-metal/property_get';
 import { runLoadHooks } from 'ember-runtime/system/lazy_load';
@@ -32,7 +33,7 @@ import ContainerDebugAdapter from 'ember-extension-support/container_debug_adapt
 import { _loaded } from 'ember-runtime/system/lazy_load';
 import { buildFakeRegistryWithDeprecations } from 'ember-runtime/mixins/registry_proxy';
 import { privatize as P } from 'container/registry';
-import environment from 'ember-metal/environment';
+import { environment } from 'ember-environment';
 import RSVP from 'ember-runtime/ext/rsvp';
 import Engine, { GLIMMER } from './engine';
 import require from 'require';
@@ -594,7 +595,7 @@ const Application = Engine.extend({
   _bootSync() {
     if (this._booted) { return; }
 
-    if (Ember.ENV._ENABLE_LEGACY_VIEW_SUPPORT && !warnedAboutLegacyViewAddon) {
+    if (ENV._ENABLE_LEGACY_VIEW_SUPPORT && !warnedAboutLegacyViewAddon) {
       deprecate(
         'Support for the `ember-legacy-views` addon will end soon, please remove it from your application.',
         false,
@@ -604,7 +605,7 @@ const Application = Engine.extend({
       warnedAboutLegacyViewAddon = true;
     }
 
-    if (Ember.ENV._ENABLE_LEGACY_CONTROLLER_SUPPORT && !warnedAboutLegacyControllerAddon) {
+    if (ENV._ENABLE_LEGACY_CONTROLLER_SUPPORT && !warnedAboutLegacyControllerAddon) {
       warn(
         'Support for the `ember-legacy-controllers` has been removed, please remove it from your application.',
         false,

@@ -1,4 +1,5 @@
 import Ember from 'ember-metal/core';
+import { ENV } from 'ember-environment';
 import EmberObject from 'ember-runtime/system/object';
 import { HANDLERS, generateTestAsFunctionDeprecation } from 'ember-debug/handlers';
 import {
@@ -20,23 +21,23 @@ let originalDeprecateHandler;
 
 QUnit.module('ember-debug', {
   setup() {
-    originalEnvValue = Ember.ENV.RAISE_ON_DEPRECATION;
+    originalEnvValue = ENV.RAISE_ON_DEPRECATION;
     originalDeprecateHandler = HANDLERS.deprecate;
 
-    Ember.ENV.RAISE_ON_DEPRECATION = true;
+    ENV.RAISE_ON_DEPRECATION = true;
   },
 
   teardown() {
     HANDLERS.deprecate = originalDeprecateHandler;
 
-    Ember.ENV.RAISE_ON_DEPRECATION = originalEnvValue;
+    ENV.RAISE_ON_DEPRECATION = originalEnvValue;
   }
 });
 
 QUnit.test('Ember.deprecate does not throw if RAISE_ON_DEPRECATION is false', function(assert) {
   assert.expect(1);
 
-  Ember.ENV.RAISE_ON_DEPRECATION = false;
+  ENV.RAISE_ON_DEPRECATION = false;
 
   try {
     Ember.deprecate('Should not throw', false, { id: 'test', until: 'forever' });
@@ -49,7 +50,7 @@ QUnit.test('Ember.deprecate does not throw if RAISE_ON_DEPRECATION is false', fu
 QUnit.test('Ember.deprecate resets deprecation level to RAISE if ENV.RAISE_ON_DEPRECATION is set', function(assert) {
   assert.expect(2);
 
-  Ember.ENV.RAISE_ON_DEPRECATION = false;
+  ENV.RAISE_ON_DEPRECATION = false;
 
   try {
     Ember.deprecate('Should not throw', false, { id: 'test', until: 'forever' });
@@ -58,7 +59,7 @@ QUnit.test('Ember.deprecate resets deprecation level to RAISE if ENV.RAISE_ON_DE
     assert.ok(false, `Expected Ember.deprecate not to throw but it did: ${e.message}`);
   }
 
-  Ember.ENV.RAISE_ON_DEPRECATION = true;
+  ENV.RAISE_ON_DEPRECATION = true;
 
   assert.throws(function() {
     Ember.deprecate('Should throw', false, { id: 'test', until: 'forever' });
@@ -68,7 +69,7 @@ QUnit.test('Ember.deprecate resets deprecation level to RAISE if ENV.RAISE_ON_DE
 QUnit.test('When ENV.RAISE_ON_DEPRECATION is true, it is still possible to silence a deprecation by id', function(assert) {
   assert.expect(3);
 
-  Ember.ENV.RAISE_ON_DEPRECATION = true;
+  ENV.RAISE_ON_DEPRECATION = true;
   registerHandler(function(message, options, next) {
     if (!options || options.id !== 'my-deprecation') {
       next(...arguments);
